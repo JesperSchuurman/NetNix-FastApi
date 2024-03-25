@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+starlette
+aiomysql
+python-dotenv
+python-multipart
+python-jose[cryptography]
+passlib
+bcrypt==4.0.1
+opencv-python
