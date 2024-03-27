@@ -82,10 +82,10 @@
             }
         },
         "/user/password": {
-            "put": {
+            "patch": {
                 "summary": "Edit Password",
                 "description": "Edit user's password.",
-                "operationId": "EditPassword__put",
+                "operationId": "EditPassword__patch",
                 "paramaters": [
                     {
                         "name": "Authorization",
@@ -128,10 +128,10 @@
             }
         },
         "/user/email": {
-            "put": {
+            "patch": {
                 "summary": "Edit Email",
                 "description": "Edit user's email.",
-                "operationId": "EditEmail__post",
+                "operationId": "EditEmail__patch",
                 "paramaters": [
                     {
                         "name": "Authorization",
@@ -199,10 +199,10 @@
                     }
                 }
             },
-            "put": {
+            "patch": {
                 "summary": "Update Subscription",
                 "description": "Update a user's subscription.",
-                "operationId": "UpdateSubscription__post",
+                "operationId": "UpdateSubscription__patch",
                 "paramaters": [
                     {
                         "name": "Authorization",
