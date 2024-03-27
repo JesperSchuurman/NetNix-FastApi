@@ -25,7 +25,7 @@ class Endpoint:
     async def getAuthorization(self, token: str | None, admin: bool = False) -> Authorization | None:
         if token and token.startswith("Bearer "):
             data = jwt.decode(token.split("Bearer ", 1)[1], SIGNING_KEY)
-            if data["exp"].isdigit() and datetime.datetime.fromtimestamp(int(data["exp"])) > datetime.datetime.utcnow():
+            if data["exp"].isdigit() and datetime.datetime.fromtimestamp(int(data["exp"])) > datetime.datetime.now(datetime.timezone.utc):
                 async with Connection() as db:
                     async with db.cursor() as cursor:
                         if admin:

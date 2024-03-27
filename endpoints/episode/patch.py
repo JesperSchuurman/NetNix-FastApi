@@ -1,18 +1,19 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 from fastapi import Form
 from aiomysql.cursors import DictCursor
 
-from src import Endpoint, Method, Connection
+from src import Endpoint, Method, Connection, ResponseType, getResponse
 
 class PatchEpisode(Endpoint):
 
-    async def callback(self, title: str = Form(), duration: int = Form(), serieId: int = Form(), season: int = Form(), filepath: str = Form(), id: int = Form()) -> JSONResponse:
+    async def callback(self, format: ResponseType = None, title: str = Form(), duration: int = Form(), serieId: int = Form(), season: int = Form(), filepath: str = Form(), id: int = Form()) -> Response:
+        response = getResponse(format)
         async with Connection() as db:
             async with db.cursor(DictCursor) as cursor:
                 if id:
                     await cursor.execute("SELECT * FROM Serie WHERE id = %s", (serieId,))
                     if await cursor.fetchone():
-                        return JSONResponse({"error": "This serie does not exist."})
+                        return response({"error": "This serie does not exist."})
                     else:
                         await cursor.execute("SELECT * FROM Episode WHERE id = %s", (id,))
                         result = await cursor.fetchone()
@@ -28,9 +29,9 @@ class PatchEpisode(Endpoint):
                             filepath = result.filepath()
                         await cursor.callproc("update_movie", (id, title, duration, serieId, season, filepath))
                         await db.comit()
-                        return JSONResponse({})
+                        return response({})
                 else:
-                    return JSONResponse({"error": "There is no movie selected."}, 400)
+                    return response({"error": "There is no movie selected."}, 400)
 
 def setup() -> PatchEpisode:
-    return PatchEpisode(Method.PATCH, "/movie/post", JSONResponse)
+    return PatchEpisode(Method.PATCH, "/movie/post")

@@ -1,23 +1,24 @@
 from fastapi import Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 
-from src import Endpoint, Method, Connection, UserType
+from src import Endpoint, Method, Connection, UserType, ResponseType, getResponse
 
 class GetMonthlyProfits(Endpoint):
 
-    async def callback(self, request: Request) -> JSONResponse:
+    async def callback(self, request: Request, format: ResponseType = None) -> Response:
+        response = getResponse(format)
         if auth := await self.getAuthorization(request.headers.get("Authorization", None), True):
             async with Connection(UserType(auth.usertype)) as db:
                 async with db.cursor() as cursor:
                     await cursor.callproc("get_subscription_data")
                     results = await cursor.fetchall()
             if not results:
-                return JSONResponse({"error": "No subscriptions found."}, 400)
+                return response({"error": "No subscriptions found."}, 400)
             profits = 0.0
             for result in results:
                 profits += result[3]
-            return JSONResponse({"profit": profits})
-        return JSONResponse({"error": "User is not permitted to view this content."}, 401)
+            return response({"profit": profits})
+        return response({"error": "User is not permitted to view this content."}, 401)
             
 def setup() -> GetMonthlyProfits:
-    return GetMonthlyProfits(Method.GET, "/user/getMonthlyProfits", JSONResponse)
+    return GetMonthlyProfits(Method.GET, "/user/getMonthlyProfits")

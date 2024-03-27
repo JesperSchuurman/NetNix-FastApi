@@ -1,12 +1,13 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 from fastapi import Form
 from aiomysql.cursors import DictCursor
 
-from src import Endpoint, Method, Connection
+from src import Endpoint, Method, Connection, ResponseType, getResponse
 
 class PatchSerie(Endpoint):
 
-    async def callback(self, title: str = Form(), genreId: int = Form(), resolution: str = Form(), id: int = Form()) -> JSONResponse:
+    async def callback(self, format: ResponseType = None, title: str = Form(), genreId: int = Form(), resolution: str = Form(), id: int = Form()) -> Response:
+        response = getResponse(format)
         async with Connection() as db:
             async with db.cursor(DictCursor) as cursor:
                 if id:
@@ -20,9 +21,9 @@ class PatchSerie(Endpoint):
                         resolution = result.resoltuion()
                     await cursor.callproc("update_serie", (id, title, genreId, resolution))
                     await db.comit()
-                    return JSONResponse({})
+                    return response({})
                 else:
-                    return JSONResponse({"error": "There is no serie selected."}, 400)
+                    return response({"error": "There is no serie selected."}, 400)
 
 def setup() -> PatchSerie:
-    return PatchSerie(Method.PATCH, "/serie/post", JSONResponse)
+    return PatchSerie(Method.PATCH, "/serie/post", Response)
