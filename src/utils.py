@@ -1,7 +1,11 @@
 import aiomysql
 import os
 
-from .enums import UserType
+from fastapi.responses import Response, JSONResponse
+from typing import Any
+from dicttoxml import dicttoxml
+
+from .enums import UserType, ResponseType
 
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -43,3 +47,18 @@ class Authorization:
     def __init__(self, email: str, usertype: UserType) -> None:
         self.email = email
         self.usertype = usertype
+
+class XMLResponse(Response):
+
+    def __init__(self, content: Any, *args, **kwargs) -> None:
+        kwargs.pop("media_type", None)
+        kwargs.pop("content", None)
+        args = [arg for arg in args if arg not in ["content", "media_type"]]
+        super().__init__(dicttoxml(content, False), media_type="text/xml", *args, **kwargs)
+
+def getResponse(responseType: ResponseType) -> type[JSONResponse] | type[XMLResponse]:
+    match responseType:
+        case ResponseType.XML:
+            return XMLResponse
+        case _:
+            return JSONResponse

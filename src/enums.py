@@ -12,3 +12,7 @@ class UserType(Enum):
     MEDIOR = 2
     JUNIOR = 3
     DEFAULT = 4
+
+class ResponseType(Enum):
+    JSON = "json"
+    XML = "xml"

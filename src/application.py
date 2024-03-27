@@ -23,4 +23,4 @@ class App(FastAPI):
         if not setup:
             raise MissingSetupFunction
         endpoint = setup()
-        self.add_api_route(endpoint.path, endpoint.callback, response_class=endpoint.responseClass, methods=[endpoint.method.name], name=endpoint.__class__.__qualname__)
+        self.add_api_route(endpoint.path, endpoint.callback, methods=[endpoint.method.name], name=endpoint.__class__.__qualname__)

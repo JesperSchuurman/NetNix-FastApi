@@ -8,19 +8,18 @@ from jose import jwt
 
 from . import Method
 from .utils import Connection, Authorization
-from .enums import UserType
+from .enums import UserType, ResponseType
 
 SIGNING_KEY = os.getenv("SIGNING_KEY")
 
 class Endpoint:
 
-    def __init__(self, method: Method, path: str, responseClass: Response) -> None:
+    def __init__(self, method: Method, path: str) -> None:
         self.jwt = CryptContext(["bcrypt"])
         self.method = method
         self.path = path
-        self.responseClass = responseClass
 
-    async def callback(self) -> Any:
+    async def callback(self, fmt: str = None, *params: ...) -> Any:
         raise NotImplementedError
     
     async def getAuthorization(self, token: str | None, admin: bool = False) -> Authorization | None:

@@ -9,6 +9,8 @@ git clone https://github.com/JesperSchuurman/NetNix-FastApi && cd NetNix-FastApi
 ```
 
 Python is required to run this program, you can download it [here](https://www.python.org/downloads/). After going through the installer you can install the requirements using the following command:
+
+**Note: Python 3.10 is required to run this application.**
 ```bash
 python3 -m pip install -r requirements
 ```
