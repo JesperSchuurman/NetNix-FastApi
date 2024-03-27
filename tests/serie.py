@@ -17,9 +17,24 @@ class SerieTest(unittest.TestCase):
         request = requests.get("https://netnix.xyz/api/v1/serie/get")
         self.assertEquals(request.status_code, 401)
 
-    def testSeriwGetShouldReturn400(self) -> None:
+    def testSerieGetShouldReturn400(self) -> None:
         request = requests.get("https://netnix.xyz/api/v1/serie/get?id=129", headers={"Authorization": f"Bearer {token}"})
-        self.assertEquals(request.status_code, 400)  
+        self.assertEquals(request.status_code, 400) 
+
+    def testSerieShouldPostNewSerieToDatabase(self) -> None:
+        request = requests.get("https://netnix.xyz/api/v1/serie/get?id=3", headers={"Authorization": f"Bearer {token}"})
+        self.assertEquals(request.status_code, 400)
+        requests.post("https://netnix.xyz/api/v1/serie/post", data={"title": "threeSeasonActionSerie", "genreId": 1, "resolution": "HD"})
+        request = requests.get("https://netnix.xyz/api/v1/serie/get?id=3", headers={"Authorization": f"Bearer {token}"})
+        self.assertEquals(request.json()["title"], "threeSeasonActionSerie")
+
+    def testSerieShouldReturn400_2(self) -> None:
+        request = requests.post("https://netnix.xyz/api/v1/serie/post", data={"title": "threeSeasonActionSerie", "resolution": "HD"})
+        self.assertEquals(request.status_code, 400)
+
+    def testSerieShouldReturn400_3(self) -> None:
+        request = requests.post("https://netnix.xyz/api/v1/serie/post", data={"title": "oneSeasonActionSerie", "genreId": 1, "resolution": "HD"})
+        self.assertEquals(request.status_code, 400)
 
 if __name__ == "__main__":
     unittest.main()

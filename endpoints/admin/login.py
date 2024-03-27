@@ -20,8 +20,8 @@ class LoginAdmin(Endpoint):
                 if not result:
                     return response({"error": "Admin with this email does not exist."}, 400)
                 if not self.jwt.verify(password, result[1]):
-                    return response({"error": "Password does not match."}, 401)
-                return response({"token": jwt.encode({"sub": result[0], "exp": str(int((datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)).timestamp()))}, SIGNING_KEY)})
+                    return response({"error": "The password was incorrect."}, 401)
+                return response({"token": jwt.encode({"sub": result[0], "exp": str(int((datetime.datetime.utcnow() + datetime.timedelta(hours=24)).timestamp()))}, SIGNING_KEY)})
 
 def setup() -> LoginAdmin:
     return LoginAdmin(Method.POST, "/admin/login")

@@ -15,12 +15,12 @@ class GetMovie(Endpoint):
                         await cursor.execute("SELECT * FROM Movie WHERE id = %s", (id,))
                         result = await cursor.fetchone()
                         if not result:
-                            return response({"error": "This movie does not exist."}, 400)
+                            return response({"error": "The movie wasn't found or it doesn't exist yet."}, 400)
                     else:
                         await cursor.callproc("get_movies")
                         result = await cursor.fetchall()
                         if not result:
-                            return response({"error": "No movies found."}, 400)
+                            return response({"error": "There are not any movies currentley."}, 400)
                     return response(result)
         return response({"error": "User is not permitted to view this content."}, 401)
             

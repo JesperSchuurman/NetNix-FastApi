@@ -13,7 +13,7 @@ class GetMonthlyProfits(Endpoint):
                     await cursor.callproc("get_subscription_data")
                     results = await cursor.fetchall()
             if not results:
-                return response({"error": "No subscriptions found."}, 400)
+                return response({"error": "There are not any subscriptions currentley."}, 400)
             profits = 0.0
             for result in results:
                 profits += result[3]
