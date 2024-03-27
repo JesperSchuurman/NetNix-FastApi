@@ -25,5 +25,24 @@ class SerieTest(unittest.TestCase):
         request = requests.get("https://netnix.xyz/api/v1/episode/get", headers={"Authorization": f"Bearer {token}"})
         self.assertEquals(request.status_code, 400)  
 
+    def testEpisodeShouldPostNewEpisodeToDatabase(self) -> None:
+        request = requests.get("https://netnix.xyz/api/v1/episode/get?id=8", headers={"Authorization": f"Bearer {token}"})
+        self.assertEquals(request.status_code, 400)
+        requests.post("https://netnix.xyz/api/v1/episode/post", data={"title": "test episode", "duration": 1234, "serieId": 1, "season": 1, "filepath": "episode/testEpisode.mp4"})
+        request = requests.get("https://netnix.xyz/api/v1/episode/get?id=8", headers={"Authorization": f"Bearer {token}"})
+        self.assertEquals(request.json()["title"], "test episode")
+
+    def testEpisodeShouldReturn400_3(self) -> None:
+        request = requests.post("https://netnix.xyz/api/v1/episode/post", data={"title": "test episode", "serieId": 1, "filepath": "episode/testEpisode.mp4"})
+        self.assertEquals(request.status_code, 400)
+
+    def testEpisodeShouldReturn400_4(self) -> None:
+        request = requests.post("https://netnix.xyz/api/v1/episode/post", data={"title": "Pilot episode oneSeasonActionSerie", "duration": 1200, "serieId": 1, "season": 1, "filepath": "pilotOSAS.mp4"})
+        self.assertEquals(request.status_code, 400)
+
+    def testEpisodeShouldReturn400_5(self) -> None:
+        request = requests.post("https://netnix.xyz/api/v1/episode/post", data={"title": "test episode2", "duration": 1234, "serieId": 38, "season": 1, "filepath": "episode/testEpisode.mp4"} )
+        self.assertEquals(request.status_code, 400)
+
 if __name__ == "__main__":
     unittest.main()
