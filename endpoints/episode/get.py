@@ -14,7 +14,7 @@ class GetMovie(Endpoint):
             async with Connection(auth.usertype) as db:
                 async with db.cursor(DictCursor) as cursor:
                     if id:
-                        await cursor.execute("SELECT * FROM Movie WHERE id = %s", (id,))
+                        await cursor.execute("SELECT * FROM Episode WHERE id = %s", (id,))
                         result = await cursor.fetchone()
                         if not result:
                             return response({"error": "The episode wasn't found or doesn't exist yet."}, 400)
