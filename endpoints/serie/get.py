@@ -14,12 +14,12 @@ class GetSerie(Endpoint):
                         await cursor.execute("SELECT * FROM Serie WHERE id = %s", (id,))
                         result = await cursor.fetchone()
                         if not result:
-                            return JSONResponse({"error": "This serie does not exist."}, 400)
+                            return JSONResponse({"error": "The serie can't be found or doesn't exist yet."}, 400)
                     else:
                         await cursor.callproc("get_series")
                         result = await cursor.fetchall()
                         if not result:
-                            return JSONResponse({"error": "No series found."}, 400)
+                            return JSONResponse({"error": "There are not any series currentley."}, 400)
                     return JSONResponse(result)
         return JSONResponse({"error": "User is not permitted to view this content."}, 401)
             
